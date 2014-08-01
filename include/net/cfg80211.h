@@ -115,6 +115,7 @@ enum ieee80211_band {
  *	on this channel.
  * @IEEE80211_CHAN_NO_10MHZ: 10 MHz bandwidth is not permitted
  *	on this channel.
+ * @IEEE80211_CHAN_OCB_ONLY: only OCB is allowed on this channel.
  *
  */
 enum ieee80211_channel_flags {
@@ -131,6 +132,7 @@ enum ieee80211_channel_flags {
 	IEEE80211_CHAN_GO_CONCURRENT	= 1<<10,
 	IEEE80211_CHAN_NO_20MHZ		= 1<<11,
 	IEEE80211_CHAN_NO_10MHZ		= 1<<12,
+	IEEE80211_CHAN_OCB_ONLY         = 1<<13,
 };
 
 #define IEEE80211_CHAN_NO_HT40 \
@@ -374,6 +376,8 @@ static inline enum nl80211_channel_type
 cfg80211_get_chandef_type(const struct cfg80211_chan_def *chandef)
 {
 	switch (chandef->width) {
+	case NL80211_CHAN_WIDTH_5:
+	case NL80211_CHAN_WIDTH_10:
 	case NL80211_CHAN_WIDTH_20_NOHT:
 		return NL80211_CHAN_NO_HT;
 	case NL80211_CHAN_WIDTH_20:
@@ -1334,6 +1338,11 @@ struct mesh_setup {
 	u16 beacon_interval;
 	int mcast_rate[IEEE80211_NUM_BANDS];
 	u32 basic_rates;
+};
+
+
+struct ocb_setup {
+	struct cfg80211_chan_def chandef;
 };
 
 /**
@@ -2388,6 +2397,10 @@ struct cfg80211_ops {
 			     const struct mesh_config *conf,
 			     const struct mesh_setup *setup);
 	int	(*leave_mesh)(struct wiphy *wiphy, struct net_device *dev);
+
+	int	(*join_ocb)(struct wiphy *wiphy, struct net_device *dev,
+			    struct ocb_setup *setup);
+	int	(*leave_ocb)(struct wiphy *wiphy, struct net_device *dev);
 
 	int	(*change_bss)(struct wiphy *wiphy, struct net_device *dev,
 			      struct bss_parameters *params);
