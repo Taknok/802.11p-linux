@@ -32,13 +32,6 @@ int __cfg80211_join_ocb(struct cfg80211_registered_device *rdev,
 
 	WARN_ON(!setup->chandef.chan);
 
-	 /* In OCB mode only those channels flagged with 'CHAN_OCB_ONLY'
-	  * may be used
-	  */
-	if (dev->ieee80211_ptr->iftype == NL80211_IFTYPE_OCB &&
-	    !(setup->chandef.chan->flags & IEEE80211_CHAN_OCB_ONLY))
-		return -EINVAL;
-
 	/* FIXME move to mac80211 -- same as in git.73de86a389 */
 	err = cfg80211_can_use_iftype_chan(rdev, wdev, wdev->iftype,
 					   setup->chandef.chan,
