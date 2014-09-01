@@ -1163,6 +1163,90 @@ static const struct file_operations fops_btcoex = {
 };
 #endif
 
+static ssize_t read_file_phy_cs(struct file *file, char __user *user_buf,
+				 size_t count, loff_t *ppos)
+{
+	struct ath_softc *sc = file->private_data;
+	char buf[32];
+	unsigned int len;
+	int val;
+
+	val = ath9k_hw_get_phy_cs(sc->sc_ah);
+	len = snprintf(buf, sizeof(buf), "%d\n", val);
+	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
+}
+
+static ssize_t write_file_phy_cs(struct file *file, const char __user *user_buf,
+				 size_t count, loff_t *ppos)
+{
+	struct ath_softc *sc = file->private_data;
+	unsigned long val;
+	char buf[32];
+	ssize_t len;
+
+	len = min(count, sizeof(buf) - 1);
+	if (copy_from_user(buf, user_buf, len))
+		return -EINVAL;
+
+	buf[len] = '\0';
+	if (strict_strtoul(buf, 0, &val))
+		return -EINVAL;
+
+	ath9k_hw_set_phy_cs(sc->sc_ah, val);
+
+	return count;
+}
+
+static const struct file_operations fops_phy_cs = {
+	.read = read_file_phy_cs,
+	.write = write_file_phy_cs,
+	.open = simple_open,
+	.owner = THIS_MODULE,
+	.llseek = default_llseek,
+};
+
+static ssize_t read_file_virt_cs(struct file *file, char __user *user_buf,
+				 size_t count, loff_t *ppos)
+{
+	struct ath_softc *sc = file->private_data;
+	char buf[32];
+	unsigned int len;
+	int val;
+
+	val = ath9k_hw_get_virt_cs(sc->sc_ah);
+	len = snprintf(buf, sizeof(buf), "%d\n", val);
+	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
+}
+
+static ssize_t write_file_virt_cs(struct file *file, const char __user *user_buf,
+				  size_t count, loff_t *ppos)
+{
+	struct ath_softc *sc = file->private_data;
+	unsigned long val;
+	char buf[32];
+	ssize_t len;
+
+	len = min(count, sizeof(buf) - 1);
+	if (copy_from_user(buf, user_buf, len))
+		return -EINVAL;
+
+	buf[len] = '\0';
+	if (strict_strtoul(buf, 0, &val))
+		return -EINVAL;
+
+	ath9k_hw_set_virt_cs(sc->sc_ah, val);
+
+	return count;
+}
+
+static const struct file_operations fops_virt_cs = {
+	.read = read_file_virt_cs,
+	.write = write_file_virt_cs,
+	.open = simple_open,
+	.owner = THIS_MODULE,
+	.llseek = default_llseek,
+};
+
 /* Ethtool support for get-stats */
 
 #define AMKSTR(nm) #nm "_BE", #nm "_BK", #nm "_VI", #nm "_VO"
@@ -1367,6 +1451,12 @@ int ath9k_init_debug(struct ath_hw *ah)
 	debugfs_create_file("btcoex", S_IRUSR, sc->debug.debugfs_phy, sc,
 			    &fops_btcoex);
 #endif
+
+	debugfs_create_file("physical_carrier_sense", S_IRUSR | S_IWUSR,
+			    sc->debug.debugfs_phy, sc, &fops_phy_cs);
+
+	debugfs_create_file("virtual_carrier_sense", S_IRUSR | S_IWUSR,
+			    sc->debug.debugfs_phy, sc, &fops_virt_cs);
 
 	return 0;
 }

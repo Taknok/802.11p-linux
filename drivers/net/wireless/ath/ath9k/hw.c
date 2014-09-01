@@ -432,6 +432,10 @@ static void ath9k_hw_init_defaults(struct ath_hw *ah)
 		ah->tx_trig_level = (AR_FTRIG_256B >> AR_FTRIG_S);
 	else
 		ah->tx_trig_level = (AR_FTRIG_512B >> AR_FTRIG_S);
+
+	/* Initially, physical and virtual carrier sense are enabled */
+	ah->saved_phy_cs = 0;
+	ah->saved_virt_cs = 0;
 }
 
 static int ath9k_hw_init_macaddr(struct ath_hw *ah)
@@ -1730,6 +1734,44 @@ fail:
 	return -EINVAL;
 }
 
+int ath9k_hw_get_phy_cs(struct ath_hw *ah)
+{
+	u32 regval;
+
+	regval = REG_READ(ah, AR_DIAG_SW);
+	return !!(regval & AR_DIAG_FORCE_RX_CLEAR);
+}
+EXPORT_SYMBOL(ath9k_hw_get_phy_cs);
+
+void ath9k_hw_set_phy_cs(struct ath_hw *ah, int val)
+{
+	if (val)
+		REG_SET_BIT(ah, AR_DIAG_SW, AR_DIAG_FORCE_RX_CLEAR);
+	else
+		REG_CLR_BIT(ah, AR_DIAG_SW, AR_DIAG_FORCE_RX_CLEAR);
+	ah->saved_phy_cs = val;
+}
+EXPORT_SYMBOL(ath9k_hw_set_phy_cs);
+
+int ath9k_hw_get_virt_cs(struct ath_hw *ah)
+{
+	u32 regval;
+
+	regval = REG_READ(ah, AR_DIAG_SW);
+	return !!(regval & AR_DIAG_IGNORE_VIRT_CS);
+}
+EXPORT_SYMBOL(ath9k_hw_get_virt_cs);
+
+void ath9k_hw_set_virt_cs(struct ath_hw *ah, int val)
+{
+	if (val)
+		REG_SET_BIT(ah, AR_DIAG_SW, AR_DIAG_IGNORE_VIRT_CS);
+	else
+		REG_CLR_BIT(ah, AR_DIAG_SW, AR_DIAG_IGNORE_VIRT_CS);
+	ah->saved_virt_cs = val;
+}
+EXPORT_SYMBOL(ath9k_hw_set_virt_cs);
+
 int ath9k_hw_reset(struct ath_hw *ah, struct ath9k_channel *chan,
 		   struct ath9k_hw_cal_data *caldata, bool fastcc)
 {
@@ -1938,6 +1980,9 @@ int ath9k_hw_reset(struct ath_hw *ah, struct ath9k_channel *chan,
 
 	if (AR_SREV_9565(ah) && common->bt_ant_diversity)
 		REG_SET_BIT(ah, AR_BTCOEX_WL_LNADIV, AR_BTCOEX_WL_LNADIV_FORCE_ON);
+
+	ath9k_hw_set_phy_cs(ah, ah->saved_phy_cs);
+	ath9k_hw_set_virt_cs(ah, ah->saved_virt_cs);
 
 	return 0;
 }

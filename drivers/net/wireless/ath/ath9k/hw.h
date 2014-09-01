@@ -924,6 +924,10 @@ struct ath_hw {
 	int (*external_reset)(void);
 
 	const struct firmware *eeprom_blob;
+
+	/* Saved values of physical & virtual carrier sense */
+	int saved_phy_cs;
+	int saved_virt_cs;
 };
 
 struct ath_bus_ops {
@@ -966,6 +970,10 @@ int ath9k_hw_reset(struct ath_hw *ah, struct ath9k_channel *chan,
 		   struct ath9k_hw_cal_data *caldata, bool fastcc);
 int ath9k_hw_fill_cap_info(struct ath_hw *ah);
 u32 ath9k_regd_get_ctl(struct ath_regulatory *reg, struct ath9k_channel *chan);
+int ath9k_hw_get_phy_cs(struct ath_hw *ah);
+void ath9k_hw_set_phy_cs(struct ath_hw *ah, int val);
+int ath9k_hw_get_virt_cs(struct ath_hw *ah);
+void ath9k_hw_set_virt_cs(struct ath_hw *ah, int val);
 
 /* GPIO / RFKILL / Antennae */
 void ath9k_hw_cfg_gpio_input(struct ath_hw *ah, u32 gpio);
