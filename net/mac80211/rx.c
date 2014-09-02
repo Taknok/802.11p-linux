@@ -3134,9 +3134,8 @@ static bool prepare_for_handlers(struct ieee80211_rx_data *rx,
 		} else if (!ieee80211_bssid_match(bssid, bssid_wildcard)) {
 			ocb_dbg(sdata, "BSSID mismatch in OCB mode!\n");
 			return false;
-		} else if ((!multicast &&
-			    ether_addr_equal(sdata->dev->dev_addr, hdr->addr1))
-			   != 0) {
+		} else if (!multicast &&
+			   !ether_addr_equal(sdata->dev->dev_addr, hdr->addr1)) {
 			/* if we are in promisc mode we also accept
 			 * packets not destined for us
 			 */
