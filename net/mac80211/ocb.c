@@ -187,11 +187,6 @@ int ieee80211_ocb_join(struct ieee80211_sub_if_data *sdata,
 	if (err)
 		return err;
 
-	/* FIXME this should not be needed if the proper BSSID is set on
-	   both STAs (the one transmitting, naother one receiving) */
-	atomic_inc(&local->iff_promiscs);
-	ieee80211_configure_filter(local);
-
 	ieee80211_bss_info_change_notify(sdata, changed);
 
 	set_bit(OCB_WORK_HOUSEKEEPING, &ifocb->wrkq_flags);
