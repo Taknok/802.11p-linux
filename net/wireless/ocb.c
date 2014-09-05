@@ -32,13 +32,6 @@ int __cfg80211_join_ocb(struct cfg80211_registered_device *rdev,
 
 	WARN_ON(!setup->chandef.chan);
 
-	/* FIXME move to mac80211 -- same as in git.73de86a389 */
-	err = cfg80211_can_use_iftype_chan(rdev, wdev, wdev->iftype,
-					   setup->chandef.chan,
-					   CHAN_MODE_EXCLUSIVE, 0);
-	if (err)
-		return err;
-
 	err = rdev_join_ocb(rdev, dev, setup);
 	if (!err)
 		wdev->chandef = setup->chandef;

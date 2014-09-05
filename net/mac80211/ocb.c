@@ -181,7 +181,6 @@ int ieee80211_ocb_join(struct ieee80211_sub_if_data *sdata,
 	sdata->needed_rx_chains = sdata->local->rx_chains;
 
 	mutex_lock(&sdata->local->mtx);
-	/* FIXME ieee80211_check_combinations */
 	err = ieee80211_vif_use_channel(sdata, &setup->chandef,
 					IEEE80211_CHANCTX_EXCLUSIVE);
 	mutex_unlock(&sdata->local->mtx);
