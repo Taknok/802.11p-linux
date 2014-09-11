@@ -1876,6 +1876,7 @@ static bool nl80211_can_set_dev_channel(struct wireless_dev *wdev)
 	 * operation to set the monitor channel if possible.
 	 */
 	return !wdev ||
+		wdev->iftype == NL80211_IFTYPE_OCB ||
 		wdev->iftype == NL80211_IFTYPE_AP ||
 		wdev->iftype == NL80211_IFTYPE_MESH_POINT ||
 		wdev->iftype == NL80211_IFTYPE_MONITOR ||
@@ -2307,6 +2308,8 @@ static int nl80211_send_chandef(struct sk_buff *msg,
 			chandef->chan->center_freq))
 		return -ENOBUFS;
 	switch (chandef->width) {
+	case NL80211_CHAN_WIDTH_5:
+	case NL80211_CHAN_WIDTH_10:
 	case NL80211_CHAN_WIDTH_20_NOHT:
 	case NL80211_CHAN_WIDTH_20:
 	case NL80211_CHAN_WIDTH_40:
@@ -8118,6 +8121,34 @@ static int nl80211_set_cqm(struct sk_buff *skb, struct genl_info *info)
 	return -EINVAL;
 }
 
+static int nl80211_join_ocb(struct sk_buff *skb, struct genl_info *info)
+{
+	struct cfg80211_registered_device *rdev = info->user_ptr[0];
+	struct net_device *dev = info->user_ptr[1];
+	struct ocb_setup setup;
+	int err;
+
+	/* start with default */
+	memset(&setup, 0x0, sizeof(setup));
+
+	if (!info->attrs[NL80211_ATTR_WIPHY_FREQ])
+		return -EINVAL;
+
+	err = nl80211_parse_chandef(rdev, info, &setup.chandef);
+	if (err)
+		return err;
+
+	return cfg80211_join_ocb(rdev, dev, &setup);
+}
+
+static int nl80211_leave_ocb(struct sk_buff *skb, struct genl_info *info)
+{
+	struct cfg80211_registered_device *rdev = info->user_ptr[0];
+	struct net_device *dev = info->user_ptr[1];
+
+	return cfg80211_leave_ocb(rdev, dev);
+}
+
 static int nl80211_join_mesh(struct sk_buff *skb, struct genl_info *info)
 {
 	struct cfg80211_registered_device *rdev = info->user_ptr[0];
@@ -9947,6 +9978,22 @@ static const struct genl_ops nl80211_ops[] = {
 	{
 		.cmd = NL80211_CMD_LEAVE_MESH,
 		.doit = nl80211_leave_mesh,
+		.policy = nl80211_policy,
+		.flags = GENL_ADMIN_PERM,
+		.internal_flags = NL80211_FLAG_NEED_NETDEV_UP |
+				  NL80211_FLAG_NEED_RTNL,
+	},
+	{
+		.cmd = NL80211_CMD_JOIN_OCB,
+		.doit = nl80211_join_ocb,
+		.policy = nl80211_policy,
+		.flags = GENL_ADMIN_PERM,
+		.internal_flags = NL80211_FLAG_NEED_NETDEV_UP |
+				  NL80211_FLAG_NEED_RTNL,
+	},
+	{
+		.cmd = NL80211_CMD_LEAVE_OCB,
+		.doit = nl80211_leave_ocb,
 		.policy = nl80211_policy,
 		.flags = GENL_ADMIN_PERM,
 		.internal_flags = NL80211_FLAG_NEED_NETDEV_UP |

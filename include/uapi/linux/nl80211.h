@@ -544,6 +544,11 @@
  * @NL80211_CMD_LEAVE_MESH: Leave the mesh network -- no special arguments, the
  *	network is determined by the network interface.
  *
+ * @NL80211_CMD_JOIN_OCB: Join the OCB network. The center frequency and
+ *	bandwidth of a channel must be given.
+ * @NL80211_CMD_LEAVE_OCB: Leave the OCB network -- no special arguments, the
+ *	network is determined by the network interface.
+ *
  * @NL80211_CMD_UNPROT_DEAUTHENTICATE: Unprotected deauthentication frame
  *	notification. This event is used to indicate that an unprotected
  *	deauthentication frame was dropped when MFP is in use.
@@ -832,6 +837,9 @@ enum nl80211_commands {
 
 	NL80211_CMD_JOIN_MESH,
 	NL80211_CMD_LEAVE_MESH,
+
+	NL80211_CMD_JOIN_OCB,
+	NL80211_CMD_LEAVE_OCB,
 
 	NL80211_CMD_UNPROT_DEAUTHENTICATE,
 	NL80211_CMD_UNPROT_DISASSOCIATE,
