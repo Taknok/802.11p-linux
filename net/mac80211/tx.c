@@ -1749,7 +1749,6 @@ netdev_tx_t ieee80211_monitor_start_xmit(struct sk_buff *skb,
 	 * radar detection by itself. We can do that later by adding a
 	 * monitor flag interfaces used for AP support.
 	 */
-	/* FIXME what about OCB -- does it need some extra treatment? */
 	if (!cfg80211_reg_can_beacon(local->hw.wiphy, chandef,
 				     sdata->vif.type))
 		goto fail_rcu;

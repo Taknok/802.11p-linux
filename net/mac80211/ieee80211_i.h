@@ -81,6 +81,7 @@ struct ieee80211_fragment_entry {
 	u8 last_pn[6]; /* PN of the last fragment if CCMP was used */
 };
 
+/* Used in OCB mode */
 static const u8 bssid_wildcard[ETH_ALEN] =
 	{ 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
 
@@ -546,18 +547,9 @@ struct ieee80211_if_ibss {
 	} state;
 };
 
-/**
- * struct ieee80211_if_ocb - the specific struct for ocb-mode
- *
- * In this struct all ocb-specific information of an interface is stored.
- *
- * @work:
- */
 struct ieee80211_if_ocb {
 	struct timer_list housekeeping_timer;
 	unsigned long wrkq_flags;
-
-	// struct cfg80211_chan_def chandef; // Dafuq?
 
 	spinlock_t incomplete_lock;
 	struct list_head incomplete_stations;
