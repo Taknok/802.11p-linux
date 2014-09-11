@@ -24,8 +24,8 @@
 #include "driver-ops.h"
 #include "rate.h"
 
-#define IEEE80211_OCB_HOUSEKEEPING_INTERVAL		(10 * HZ)	/* (60 * HZ) */
-#define IEEE80211_OCB_PEER_INACTIVITY_LIMIT		(30 * HZ)	/* (240 * HZ) */
+#define IEEE80211_OCB_HOUSEKEEPING_INTERVAL		(60 * HZ)
+#define IEEE80211_OCB_PEER_INACTIVITY_LIMIT		(240 * HZ)
 #define IEEE80211_OCB_MAX_STA_ENTRIES			128
 
 enum ocb_deferred_task_flags {
