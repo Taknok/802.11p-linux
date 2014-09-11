@@ -1073,6 +1073,7 @@ void ieee80211_set_wmm_default(struct ieee80211_sub_if_data *sdata,
 	struct ieee80211_chanctx_conf *chanctx_conf;
 	int ac;
 	bool use_11b, enable_qos;
+	bool is_ocb; /* Use another EDCA parameters if dot11OCBEnabled is true */
 	int aCWmin, aCWmax;
 
 	if (!local->ops->conf_tx)
@@ -1097,6 +1098,8 @@ void ieee80211_set_wmm_default(struct ieee80211_sub_if_data *sdata,
 	 */
 	enable_qos = (sdata->vif.type != NL80211_IFTYPE_STATION);
 
+	is_ocb = (sdata->vif.type == NL80211_IFTYPE_OCB);
+
 	/* Set defaults according to 802.11-2007 Table 7-37 */
 	aCWmax = 1023;
 	if (use_11b)
@@ -1118,7 +1121,10 @@ void ieee80211_set_wmm_default(struct ieee80211_sub_if_data *sdata,
 				qparam.cw_max = aCWmax;
 				qparam.cw_min = aCWmin;
 				qparam.txop = 0;
-				qparam.aifs = 7;
+				if (is_ocb)
+					qparam.aifs = 9;
+				else
+					qparam.aifs = 7;
 				break;
 			/* never happens but let's not leave undefined */
 			default:
@@ -1126,21 +1132,32 @@ void ieee80211_set_wmm_default(struct ieee80211_sub_if_data *sdata,
 				qparam.cw_max = aCWmax;
 				qparam.cw_min = aCWmin;
 				qparam.txop = 0;
-				qparam.aifs = 3;
+				if (is_ocb)
+					qparam.aifs = 6;
+				else
+					qparam.aifs = 3;
 				break;
 			case IEEE80211_AC_VI:
 				qparam.cw_max = aCWmin;
 				qparam.cw_min = (aCWmin + 1) / 2 - 1;
-				if (use_11b)
+				if (is_ocb)
+					qparam.txop = 0;
+				else if (use_11b)
 					qparam.txop = 6016/32;
 				else
 					qparam.txop = 3008/32;
-				qparam.aifs = 2;
+
+				if (is_ocb)
+					qparam.aifs = 3;
+				else
+					qparam.aifs = 2;
 				break;
 			case IEEE80211_AC_VO:
 				qparam.cw_max = (aCWmin + 1) / 2 - 1;
 				qparam.cw_min = (aCWmin + 1) / 4 - 1;
-				if (use_11b)
+				if (is_ocb)
+					qparam.txop = 0;
+				else if (use_11b)
 					qparam.txop = 3264/32;
 				else
 					qparam.txop = 1504/32;
