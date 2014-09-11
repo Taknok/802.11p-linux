@@ -72,10 +72,10 @@ void ieee80211_ocb_rx_no_sta(struct ieee80211_sub_if_data *sdata,
 
 	sta->last_rx = jiffies;
 
-	/* make sure mandatory rates are always added */
+	/* Add only mandatory rates for now */
 	sband = local->hw.wiphy->bands[band];
-	sta->sta.supp_rates[band] = supp_rates |
-			ieee80211_mandatory_rates(sband, scan_width);
+	sta->sta.supp_rates[band] = ieee80211_mandatory_rates(sband, scan_width);
+	/* sta->sta.supp_rates[band] |= supp_rates; */
 
 	spin_lock(&ifocb->incomplete_lock);
 	list_add(&sta->list, &ifocb->incomplete_stations);
