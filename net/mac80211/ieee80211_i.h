@@ -82,6 +82,8 @@ struct ieee80211_fragment_entry {
 	u8 last_pn[6]; /* PN of the last fragment if CCMP was used */
 };
 
+/* Used in OCB mode */
+static const u8 bssid_wildcard[ETH_ALEN] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
 
 struct ieee80211_bss {
 	u32 device_ts_beacon, device_ts_presp;
@@ -546,6 +548,14 @@ struct ieee80211_if_ibss {
 	} state;
 };
 
+struct ieee80211_if_ocb {
+	struct timer_list housekeeping_timer;
+	unsigned long wrkq_flags;
+
+	spinlock_t incomplete_lock;
+	struct list_head incomplete_stations;
+};
+
 /**
  * struct ieee80211_mesh_sync_ops - Extensible synchronization framework interface
  *
@@ -839,6 +849,7 @@ struct ieee80211_sub_if_data {
 		struct ieee80211_if_managed mgd;
 		struct ieee80211_if_ibss ibss;
 		struct ieee80211_if_mesh mesh;
+		struct ieee80211_if_ocb ocb;
 		u32 mntr_flags;
 	} u;
 
@@ -1470,6 +1481,15 @@ int ieee80211_ibss_csa_beacon(struct ieee80211_sub_if_data *sdata,
 			      struct cfg80211_csa_settings *csa_settings);
 int ieee80211_ibss_finish_csa(struct ieee80211_sub_if_data *sdata);
 void ieee80211_ibss_stop(struct ieee80211_sub_if_data *sdata);
+
+/* OCB code */
+void ieee80211_ocb_work(struct ieee80211_sub_if_data *sdata);
+void ieee80211_ocb_rx_no_sta(struct ieee80211_sub_if_data *sdata,
+			     const u8 *bssid, const u8 *addr, u32 supp_rates);
+void ieee80211_ocb_setup_sdata(struct ieee80211_sub_if_data *sdata);
+int ieee80211_ocb_join(struct ieee80211_sub_if_data *sdata,
+		       struct ocb_setup *setup);
+int ieee80211_ocb_leave(struct ieee80211_sub_if_data *sdata);
 
 /* mesh code */
 void ieee80211_mesh_work(struct ieee80211_sub_if_data *sdata);
