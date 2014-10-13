@@ -28,6 +28,12 @@
 #define IEEE80211_OCB_PEER_INACTIVITY_LIMIT		(240 * HZ)
 #define IEEE80211_OCB_MAX_STA_ENTRIES			128
 
+/**
+ * enum ocb_deferred_task_flags - OCB deferred task action
+ * @OCB_WORK_HOUSEKEEPING: run housekeeping function
+ *
+ * These flags are used in @wrkq_flags field of &struct ieee80211_if_ocb
+ */
 enum ocb_deferred_task_flags {
 	OCB_WORK_HOUSEKEEPING,
 };

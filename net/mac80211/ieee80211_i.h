@@ -546,6 +546,14 @@ struct ieee80211_if_ibss {
 	} state;
 };
 
+/**
+ * struct ieee80211_if_ocb - OCB mode state
+ * @housekeeping_timer: timer for periodic invocation of a deferred task
+ *	(mainly performing a housekeeping functionality)
+ * @wrkq_flags: OCB deferred task action
+ * @incomplete_lock: delayed STA insertion lock
+ * @incomplete_stations: list of STAs waiting for delayed insertion
+ */
 struct ieee80211_if_ocb {
 	struct timer_list housekeeping_timer;
 	unsigned long wrkq_flags;

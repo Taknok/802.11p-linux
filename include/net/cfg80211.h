@@ -1337,7 +1337,12 @@ struct mesh_setup {
 	u32 basic_rates;
 };
 
-
+/**
+ * struct ocb_setup - 802.11p OCB mode setup configuration
+ * @chandef: defines the channel to use
+ *
+ * These parameters are fixed when connecting to the network
+ */
 struct ocb_setup {
 	struct cfg80211_chan_def chandef;
 };
