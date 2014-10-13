@@ -1319,6 +1319,8 @@ static void ieee80211_recalc_smps_work(struct work_struct *work)
 static void ieee80211_setup_sdata(struct ieee80211_sub_if_data *sdata,
 				  enum nl80211_iftype type)
 {
+	static const u8 bssid_wldcrd[ETH_ALEN] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+
 	/* clear type-dependent union */
 	memset(&sdata->u, 0, sizeof(sdata->u));
 
@@ -1371,7 +1373,7 @@ static void ieee80211_setup_sdata(struct ieee80211_sub_if_data *sdata,
 		ieee80211_sta_setup_sdata(sdata);
 		break;
 	case NL80211_IFTYPE_OCB:
-		sdata->vif.bss_conf.bssid = bssid_wildcard;
+		sdata->vif.bss_conf.bssid = bssid_wldcrd;
 		ieee80211_ocb_setup_sdata(sdata);
 		break;
 	case NL80211_IFTYPE_ADHOC:

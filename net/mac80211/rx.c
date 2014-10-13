@@ -1265,7 +1265,8 @@ ieee80211_rx_h_sta_process(struct ieee80211_rx_data *rx)
 	} else if (rx->sdata->vif.type == NL80211_IFTYPE_OCB) {
 		u8 *bssid = ieee80211_get_bssid(hdr, rx->skb->len,
 						NL80211_IFTYPE_OCB);
-		if (ieee80211_bssid_match(bssid, bssid_wildcard))
+		/* OCB uses wild-card BSSID */
+		if (is_broadcast_ether_addr(bssid))
 			sta->last_rx = jiffies;
 	} else if (!is_multicast_ether_addr(hdr->addr1)) {
 		/*
@@ -3131,7 +3132,7 @@ static bool prepare_for_handlers(struct ieee80211_rx_data *rx,
 			return false;
 		if (ieee80211_is_beacon(hdr->frame_control)) {
 			return false;
-		} else if (!ieee80211_bssid_match(bssid, bssid_wildcard)) {
+		} else if (!is_broadcast_ether_addr(bssid)) {
 			ocb_dbg(sdata, "BSSID mismatch in OCB mode!\n");
 			return false;
 		} else if (!multicast &&

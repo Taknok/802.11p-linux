@@ -2017,7 +2017,7 @@ netdev_tx_t ieee80211_subif_start_xmit(struct sk_buff *skb,
 		/* DA SA BSSID */
 		memcpy(hdr.addr1, skb->data, ETH_ALEN);
 		memcpy(hdr.addr2, skb->data + ETH_ALEN, ETH_ALEN);
-		memset(hdr.addr3, 0xff, ETH_ALEN);
+		eth_broadcast_addr(hdr.addr3);
 		hdrlen = 24;
 		chanctx_conf = rcu_dereference(sdata->vif.chanctx_conf);
 		if (!chanctx_conf)

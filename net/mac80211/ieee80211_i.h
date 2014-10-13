@@ -81,9 +81,6 @@ struct ieee80211_fragment_entry {
 	u8 last_pn[6]; /* PN of the last fragment if CCMP was used */
 };
 
-/* Used in OCB mode */
-static const u8 bssid_wildcard[ETH_ALEN] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
-
 struct ieee80211_bss {
 	u32 device_ts_beacon, device_ts_presp;
 
