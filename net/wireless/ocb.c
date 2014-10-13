@@ -30,7 +30,8 @@ int __cfg80211_join_ocb(struct cfg80211_registered_device *rdev,
 	if (dev->ieee80211_ptr->iftype != NL80211_IFTYPE_OCB)
 		return -EOPNOTSUPP;
 
-	WARN_ON(!setup->chandef.chan);
+	if (WARN_ON(!setup->chandef.chan))
+		return -EINVAL;
 
 	err = rdev_join_ocb(rdev, dev, setup);
 	if (!err)
