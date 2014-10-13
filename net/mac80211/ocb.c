@@ -80,7 +80,6 @@ void ieee80211_ocb_rx_no_sta(struct ieee80211_sub_if_data *sdata,
 	/* Add only mandatory rates for now */
 	sband = local->hw.wiphy->bands[band];
 	sta->sta.supp_rates[band] = ieee80211_mandatory_rates(sband, scan_width);
-	/* sta->sta.supp_rates[band] |= supp_rates; */
 
 	spin_lock(&ifocb->incomplete_lock);
 	list_add(&sta->list, &ifocb->incomplete_stations);
@@ -88,9 +87,6 @@ void ieee80211_ocb_rx_no_sta(struct ieee80211_sub_if_data *sdata,
 	ieee80211_queue_work(&local->hw, &sdata->work);
 }
 
-/* TODO: Almost the same as ieee80211_ibss_finish_sta()
- *       Maybe use the same function for both
- */
 static struct sta_info *ieee80211_ocb_finish_sta(struct sta_info *sta)
 	__acquires(RCU)
 {
@@ -226,9 +222,6 @@ int ieee80211_ocb_leave(struct ieee80211_sub_if_data *sdata)
 	clear_bit(SDATA_STATE_OFFCHANNEL, &sdata->state);
 	ieee80211_bss_info_change_notify(sdata, BSS_CHANGED_OCB);
 
-#if 0 /* TODO */
-	drv_leave_ocb(local, sdata);
-#endif
 	mutex_lock(&sdata->local->mtx);
 	ieee80211_vif_release_channel(sdata);
 	mutex_unlock(&sdata->local->mtx);
