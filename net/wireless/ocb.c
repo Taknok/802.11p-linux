@@ -69,9 +69,8 @@ static int __cfg80211_leave_ocb(struct cfg80211_registered_device *rdev,
 		return -EOPNOTSUPP;
 
 	err = rdev_leave_ocb(rdev, dev);
-	if (!err) {
+	if (!err)
 		memset(&wdev->chandef, 0, sizeof(wdev->chandef));
-	}
 
 	return err;
 }

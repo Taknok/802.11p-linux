@@ -44,9 +44,8 @@ void ieee80211_ocb_rx_no_sta(struct ieee80211_sub_if_data *sdata,
 	struct sta_info *sta;
 	int band;
 
-	/*
-	 * XXX: Consider removing the least recently used entry and
-	 * 	allow new one to be added.
+	/* XXX: Consider removing the least recently used entry and
+	 *      allow new one to be added.
 	 */
 	if (local->num_sta >= IEEE80211_OCB_MAX_STA_ENTRIES) {
 		net_info_ratelimited("%s: No room for a new OCB STA entry %pM\n",
@@ -84,7 +83,8 @@ void ieee80211_ocb_rx_no_sta(struct ieee80211_sub_if_data *sdata,
 }
 
 /* TODO: Almost the same as ieee80211_ibss_finish_sta()
- *       Maybe use the same function for both */
+ *       Maybe use the same function for both
+ */
 static struct sta_info *ieee80211_ocb_finish_sta(struct sta_info *sta)
 	__acquires(RCU)
 {
@@ -148,7 +148,7 @@ void ieee80211_ocb_work(struct ieee80211_sub_if_data *sdata)
 
 static void ieee80211_ocb_housekeeping_timer(unsigned long data)
 {
-	struct ieee80211_sub_if_data *sdata = (void *) data;
+	struct ieee80211_sub_if_data *sdata = (void *)data;
 	struct ieee80211_local *local = sdata->local;
 	struct ieee80211_if_ocb *ifocb = &sdata->u.ocb;
 
@@ -198,7 +198,7 @@ int ieee80211_ocb_join(struct ieee80211_sub_if_data *sdata,
 
 int ieee80211_ocb_leave(struct ieee80211_sub_if_data *sdata)
 {
-        struct ieee80211_if_ocb *ifocb = &sdata->u.ocb;
+	struct ieee80211_if_ocb *ifocb = &sdata->u.ocb;
 	struct ieee80211_local *local = sdata->local;
 	struct sta_info *sta;
 
@@ -207,7 +207,7 @@ int ieee80211_ocb_leave(struct ieee80211_sub_if_data *sdata)
 	spin_lock_bh(&ifocb->incomplete_lock);
 	while (!list_empty(&ifocb->incomplete_stations)) {
 		sta = list_first_entry(&ifocb->incomplete_stations,
-				struct sta_info, list);
+				       struct sta_info, list);
 		list_del(&sta->list);
 		spin_unlock_bh(&ifocb->incomplete_lock);
 
