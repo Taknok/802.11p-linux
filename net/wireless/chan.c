@@ -895,7 +895,7 @@ cfg80211_get_chan_state(struct wireless_dev *wdev,
 	case NL80211_IFTYPE_OCB:
 		if (wdev->chandef.chan) {
 			*chan = wdev->chandef.chan;
-			*chanmode = CHAN_MODE_EXCLUSIVE;
+			*chanmode = CHAN_MODE_SHARED;
 			return;
 		}
 		break;
