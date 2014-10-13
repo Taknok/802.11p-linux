@@ -8089,11 +8089,8 @@ static int nl80211_join_ocb(struct sk_buff *skb, struct genl_info *info)
 {
 	struct cfg80211_registered_device *rdev = info->user_ptr[0];
 	struct net_device *dev = info->user_ptr[1];
-	struct ocb_setup setup;
+	struct ocb_setup setup = {};
 	int err;
-
-	/* start with default */
-	memset(&setup, 0x0, sizeof(setup));
 
 	if (!info->attrs[NL80211_ATTR_WIPHY_FREQ])
 		return -EINVAL;
