@@ -549,6 +549,7 @@ struct ieee80211_if_ibss {
  * @wrkq_flags: OCB deferred task action
  * @incomplete_lock: delayed STA insertion lock
  * @incomplete_stations: list of STAs waiting for delayed insertion
+ * @joined: indication if the interface is joined to an OCB network
  */
 struct ieee80211_if_ocb {
 	struct timer_list housekeeping_timer;
@@ -557,10 +558,7 @@ struct ieee80211_if_ocb {
 	spinlock_t incomplete_lock;
 	struct list_head incomplete_stations;
 
-	enum {
-		IEEE80211_OCB_MLME_STOPPED,
-		IEEE80211_OCB_MLME_JOINED,
-	} state;
+	bool joined;
 };
 
 /**

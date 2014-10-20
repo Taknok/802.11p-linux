@@ -127,7 +127,7 @@ void ieee80211_ocb_work(struct ieee80211_sub_if_data *sdata)
 	struct ieee80211_if_ocb *ifocb = &sdata->u.ocb;
 	struct sta_info *sta;
 
-	if (ifocb->state != IEEE80211_OCB_MLME_JOINED)
+	if (ifocb->joined != true)
 		return;
 
 	sdata_lock(sdata);
@@ -194,7 +194,7 @@ int ieee80211_ocb_join(struct ieee80211_sub_if_data *sdata,
 
 	ieee80211_bss_info_change_notify(sdata, changed);
 
-	ifocb->state = IEEE80211_OCB_MLME_JOINED;
+	ifocb->joined = true;
 
 	set_bit(OCB_WORK_HOUSEKEEPING, &ifocb->wrkq_flags);
 	ieee80211_queue_work(&local->hw, &sdata->work);
@@ -209,7 +209,7 @@ int ieee80211_ocb_leave(struct ieee80211_sub_if_data *sdata)
 	struct ieee80211_local *local = sdata->local;
 	struct sta_info *sta;
 
-	ifocb->state = IEEE80211_OCB_MLME_STOPPED;
+	ifocb->joined = false;
 	sta_info_flush(sdata);
 
 	spin_lock_bh(&ifocb->incomplete_lock);
