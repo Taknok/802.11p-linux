@@ -557,6 +557,11 @@ struct ieee80211_if_ocb {
 
 	spinlock_t incomplete_lock;
 	struct list_head incomplete_stations;
+
+	enum {
+		IEEE80211_OCB_MLME_STOPPED,
+		IEEE80211_OCB_MLME_JOINED,
+	} state;
 };
 
 /**

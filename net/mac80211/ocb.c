@@ -127,6 +127,9 @@ void ieee80211_ocb_work(struct ieee80211_sub_if_data *sdata)
 	struct ieee80211_if_ocb *ifocb = &sdata->u.ocb;
 	struct sta_info *sta;
 
+	if (ifocb->state != IEEE80211_OCB_MLME_JOINED)
+		return;
+
 	sdata_lock(sdata);
 
 	spin_lock_bh(&ifocb->incomplete_lock);
@@ -191,6 +194,8 @@ int ieee80211_ocb_join(struct ieee80211_sub_if_data *sdata,
 
 	ieee80211_bss_info_change_notify(sdata, changed);
 
+	ifocb->state = IEEE80211_OCB_MLME_JOINED;
+
 	set_bit(OCB_WORK_HOUSEKEEPING, &ifocb->wrkq_flags);
 	ieee80211_queue_work(&local->hw, &sdata->work);
 
@@ -204,6 +209,7 @@ int ieee80211_ocb_leave(struct ieee80211_sub_if_data *sdata)
 	struct ieee80211_local *local = sdata->local;
 	struct sta_info *sta;
 
+	ifocb->state = IEEE80211_OCB_MLME_STOPPED;
 	sta_info_flush(sdata);
 
 	spin_lock_bh(&ifocb->incomplete_lock);
@@ -229,6 +235,13 @@ int ieee80211_ocb_leave(struct ieee80211_sub_if_data *sdata)
 	skb_queue_purge(&sdata->skb_queue);
 
 	del_timer_sync(&sdata->u.ocb.housekeeping_timer);
+	/*
+	 * If the timer fired while we waited for it, it will have
+	 * requeued the work. Now the work will be running again
+	 * but will not rearm the timer again because it checks
+	 * whether we are connected to the network or not -- at this
+	 * point we shouldn't be anymore.
+	 */
 
 	return 0;
 }
