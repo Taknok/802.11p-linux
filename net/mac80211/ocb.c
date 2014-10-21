@@ -181,6 +181,9 @@ int ieee80211_ocb_join(struct ieee80211_sub_if_data *sdata,
 	u32 changed = BSS_CHANGED_OCB;
 	int err;
 
+	if (ifocb->joined == true)
+		return -EINVAL;
+
 	sdata->flags |= IEEE80211_SDATA_OPERATING_GMODE;
 	sdata->smps_mode = IEEE80211_SMPS_OFF;
 	sdata->needed_rx_chains = sdata->local->rx_chains;
