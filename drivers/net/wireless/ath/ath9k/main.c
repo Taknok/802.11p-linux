@@ -987,6 +987,8 @@ static void ath9k_vif_iter(void *data, u8 *mac, struct ieee80211_vif *vif)
 		iter_data->nstations++;
 		break;
 	case NL80211_IFTYPE_OCB:
+		iter_data->nocbs++;
+		break;
 	case NL80211_IFTYPE_ADHOC:
 		iter_data->nadhocs++;
 		break;
@@ -1826,12 +1828,8 @@ static void ath9k_bss_info_changed(struct ieee80211_hw *hw,
 		ath9k_hw_write_associd(sc->sc_ah);
 	}
 
-	/* FIXME -- fix the functionality
-	  this is just copied from BSS_CHANGED_IBSS as a placeholder */
 	if (changed & BSS_CHANGED_OCB) {
 		memcpy(common->curbssid, bss_conf->bssid, ETH_ALEN);
-		common->curaid = bss_conf->aid;
-		ath9k_hw_write_associd(sc->sc_ah);
 	}
 
 	if ((changed & BSS_CHANGED_BEACON_ENABLED) ||

@@ -24,6 +24,8 @@ const char *ath_opmode_to_string(enum nl80211_iftype opmode)
 		return "UNSPEC";
 	case NL80211_IFTYPE_ADHOC:
 		return "ADHOC";
+	case NL80211_IFTYPE_OCB:
+		return "OCB";
 	case NL80211_IFTYPE_STATION:
 		return "STATION";
 	case NL80211_IFTYPE_AP:
