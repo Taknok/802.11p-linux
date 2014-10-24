@@ -71,7 +71,7 @@
 
 #define ATH9K_RSSI_BAD			-128
 
-#define ATH9K_NUM_CHANNELS	38
+#define ATH9K_NUM_CHANNELS	54
 
 /* Register read/write primitives */
 #define REG_WRITE(_ah, _reg, _val) \
@@ -427,6 +427,7 @@ struct ath9k_channel {
 
 #define IS_CHAN_HALF_RATE(_c) (!!((_c)->channelFlags & CHANNEL_HALF))
 #define IS_CHAN_QUARTER_RATE(_c) (!!((_c)->channelFlags & CHANNEL_QUARTER))
+
 #define IS_CHAN_A_FAST_CLOCK(_ah, _c)			\
 	(IS_CHAN_5GHZ(_c) && ((_ah)->caps.hw_caps & ATH9K_HW_CAP_FASTCLOCK))
 

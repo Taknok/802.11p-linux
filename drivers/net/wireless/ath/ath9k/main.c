@@ -920,6 +920,7 @@ static void ath9k_vif_iter(struct ath9k_vif_iter_data *iter_data,
 		if (avp->assoc && !iter_data->primary_sta)
 			iter_data->primary_sta = vif;
 		break;
+	case NL80211_IFTYPE_OCB:
 	case NL80211_IFTYPE_ADHOC:
 		iter_data->nadhocs++;
 		if (vif->bss_conf.enable_beacon)
@@ -1094,6 +1095,8 @@ void ath9k_calculate_summary_state(struct ath_softc *sc,
 
 		if (iter_data.nmeshes)
 			ah->opmode = NL80211_IFTYPE_MESH_POINT;
+		else if (iter_data.nocbs)
+			ah->opmode = NL80211_IFTYPE_OCB;
 		else if (iter_data.nwds)
 			ah->opmode = NL80211_IFTYPE_AP;
 		else if (iter_data.nadhocs)
@@ -1105,9 +1108,10 @@ void ath9k_calculate_summary_state(struct ath_softc *sc,
 	ath9k_hw_setopmode(ah);
 
 	ctx->switch_after_beacon = false;
-	if ((iter_data.nstations + iter_data.nadhocs + iter_data.nmeshes) > 0)
+	if ((iter_data.nstations + iter_data.nadhocs + iter_data.nmeshes +
+	    iter_data.nocbs) > 0) {
 		ah->imask |= ATH9K_INT_TSFOOR;
-	else {
+	} else {
 		ah->imask &= ~ATH9K_INT_TSFOOR;
 		if (iter_data.naps == 1 && iter_data.beacons)
 			ctx->switch_after_beacon = true;
@@ -1745,6 +1749,15 @@ static void ath9k_bss_info_changed(struct ieee80211_hw *hw,
 	}
 
 	if (changed & BSS_CHANGED_IBSS) {
+		memcpy(common->curbssid, bss_conf->bssid, ETH_ALEN);
+		common->curaid = bss_conf->aid;
+		ath9k_hw_write_associd(sc->sc_ah);
+	}
+
+	/* FIXME -- fix the functionality
+	 * this is just copied from BSS_CHANGED_IBSS as a placeholder
+	 */
+	if (changed & BSS_CHANGED_OCB) {
 		memcpy(common->curbssid, bss_conf->bssid, ETH_ALEN);
 		common->curaid = bss_conf->aid;
 		ath9k_hw_write_associd(sc->sc_ah);

@@ -837,8 +837,9 @@ static ssize_t read_file_misc(struct file *file, char __user *user_buf,
 			i++, iter_data.naps, iter_data.nstations,
 			iter_data.nmeshes, iter_data.nwds);
 		len += scnprintf(buf + len, sizeof(buf) - len,
-			" ADHOC: %i TOTAL: %hi BEACON-VIF: %hi\n",
-			iter_data.nadhocs, sc->cur_chan->nvifs, sc->nbcnvifs);
+			" ADHOC: %i OCB: %i TOTAL: %hi BEACON-VIF: %hi\n",
+			iter_data.nadhocs, iter_data.nocbs, sc->cur_chan->nvifs,
+			sc->nbcnvifs);
 	}
 
 	if (len > sizeof(buf))
