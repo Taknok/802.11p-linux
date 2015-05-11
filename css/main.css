@@ -199,6 +199,9 @@ a:visited { color: #205caa; }
 
 .post-content h2 {
   font-size: 32px;
+  border-bottom: solid #bbb 2px;
+  text-shadow: 0.5px 0.5px 1px gray;
+  padding-bottom: 10pt;
   /* letter-spacing: -1.25px; */
 }
 

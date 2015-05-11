@@ -3,141 +3,123 @@ layout: page
 title: HOWTO
 ---
 
-{:toc}
+Installation
+------------
 
-Clone and compile the Linux kernel
-----------------------------------
+### Linux kernel
 
-Use some extra directory for all the components needed
 
-    cd c2c/
+Mainline Linux kernel 3.19 contains most of the changes needed
+for 802.11p support. The only missing part is the patch for ath9k
+driver, which needs to be fetched from our
+[repository](https://github.com/CTU-IIG/802.11p-linux.git).
 
 Clone the repository (this will take a *few minutes*)
 
-    c2c$ git clone https://github.com/CTU-IIG/802.11p-linux.git
-    c2c$ cd 802.11p-linux
-
-Checkout particular branch
-
-    c2c/802.11p-linux$ git checkout its-g5_v3
+    git clone --branch its-g5_v3 https://github.com/CTU-IIG/802.11p-linux.git
+    cd 802.11p-linux
 
 Prepare the folder for compilation
 
-    c2c/802.11p-linux$ mkdir _build
+    mkdir _build
 
 Use the appropriate defconfig
 
-    c2c/802.11p-linux$ make O=_build x86_64_defconfig
+    make O=_build x86_64_defconfig
 
-Configure the kernel if necessary (enable MAC80211_OCB_DEBUG,
+Configure the kernel if necessary (enable ATH_9K, MAC80211_OCB_DEBUG,
 CONFIG_MAC80211_STA_DEBUG etc.)
 
-    c2c/802.11p-linux$ cd _build
-    c2c/802.11p-linux/_build$ make menuconfig
+    cd _build
+    make menuconfig
 
 Run the compilation
 
-    c2c/802.11p-linux/_build$ make -j4
+    make -j4
 
 Install the modules and the kernel
 
-    c2c/802.11p-linux/_build$ sudo make modules_install
-    c2c/802.11p-linux/_build$ sudo make install
+    sudo make modules_install
+    sudo make install
 
 
-iw -- wifi configuration tool
-----------------------------
+### iw -- wireless configuration tool
 
-Use some extra directory for all the components needed
-
-    cd c2c/
+IEEE802.11p support is
+[available in `iw` 4.0 and later](https://git.kernel.org/cgit/linux/kernel/git/jberg/iw.git/commit/?id=3955e5247806b94261ed2fc6d34c54e6cdee6676).
+If your system has an older version follow this procedure.
 
 Install libnl development files
 
-    c2c$ sudo apt-get install libnl-dev
+    sudo apt-get install libnl-dev
 
 Clone the official iw repository
 
-    c2c$ git clone https://github.com/CTU-IIG/802.11p-iw.git
-    c2c$ cd 802.11p-iw
-    c2c/802.11p-iw$ git checkout its-g5_v3
+    git clone --branch its-g5_v3 https://github.com/CTU-IIG/802.11p-iw.git
+    cd 802.11p-iw
 
 Build it
 
-    c2c/802.11p-iw$ make
+    make
 
 Install it
 
-    c2c/802.11p-iw$ sudo PREFIX=/ make install
+    sudo PREFIX=/ make install
 
 Test it
 
-    c2c/802.11p-iw$ /sbin/iw | grep -i ocb
+    /sbin/iw | grep -i ocb
      	dev <devname> ocb leave
      	dev <devname> ocb join <freq in MHz> <5MHZ|10MHZ> [fixed-freq]
 
 
-wireless-regdb -- regulatory information
-----------------------------------------
+### wireless-regdb -- regulatory information
 
-Use some extra directory for all the components needed
+Install the needed dependencies
 
-    cd c2c/
+    sudo apt-get install python-m2crypto
 
-Install some extra packages
+Clone the repository, compile it, install it
 
-    c2c$ sudo apt-get install python-m2crypto
-
-Clone the repository
-
-    c2c$ git clone https://github.com/CTU-IIG/802.11p-wireless-regdb.git
-    c2c$ cd 802.11p-wireless-regdb
-    c2c/802.11p-wireless-regdb$ git checkout its-g5_v1
-
-    c2c/802.11p-wireless-regdb$ make
-    c2c/802.11p-wireless-regdb$ sudo PREFIX=/ make install
+    git clone --branch its-g5_v1 https://github.com/CTU-IIG/802.11p-wireless-regdb.git
+    cd 802.11p-wireless-regdb
+    make
+    sudo PREFIX=/ make install
 
 
-CRDA -- Central Regulatory Domain Agent
---------------------------------------
-
-Use some extra directory for all the components needed
-
-    cd c2c/
+### CRDA -- Central Regulatory Domain Agent
 
 Install some extra packages
 
-    c2c$ sudo apt-get install python-m2crypto
-    c2c$ sudo apt-get install libgcrypt11-dev
+    sudo apt-get install python-m2crypto libgcrypt11-dev
 
 Clone the repository
 
-    c2c$ git clone https://github.com/CTU-IIG/802.11p-crda.git
-    c2c$ cd 802.11p-crda
-    c2c/802.11p-crda$ git checkout its-g5_v1
+    git clone --branch its-g5_v1 https://github.com/CTU-IIG/802.11p-crda.git
+    cd 802.11p-crda
 
-We are using our own key for regulatory.bin and CRDA
+Copy your public key (installed by wireless-regdb, see above) to CRDA sources
 
-    c2c/802.11p-crda$ cp /lib/crda/pubkeys/username.key.pub.pem pubkeys/
+    cp /lib/crda/pubkeys/$USER.key.pub.pem pubkeys/
 
-Compile + install it
+Compile and install CRDA
 
-    c2c/802.11p-crda$ make
-    c2c/802.11p-crda$ sudo PREFIX=/ REG_BIN=/lib/crda/regulatory.bin make install
+    make
+    sudo PREFIX=/ REG_BIN=/lib/crda/regulatory.bin make install
 
-Test CRDA + generated regulatory.bin
+Test CRDA and the generated regulatory.bin
 
-    c2c/802.11p-crda$ sudo /sbin/regdbdump ../802.11p-wireless-regdb/regulatory.bin | grep -i ocb
+    sudo /sbin/regdbdump ../802.11p-wireless-regdb/regulatory.bin | grep -i ocb
     country 00: invalid
      	(5850.000 - 5925.000 @ 20.000), (20.00), NO-CCK, OCB-ONLY
 
 
-Right now is probably the right time reboot the computer into the
-newly compiled kernel
+Now is the right time to reboot the computer into the newly compiled
+kernel.
 
 
-Configure OCB interface
-----------------------
+Configuring a wireless interface for OCB mode
+-------------------------------------------
 
     sudo iw reg set DE
     sudo ip link set wlan0 down
