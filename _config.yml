@@ -1,0 +1,12 @@
+# Site settings
+title: Linux IEEE 802.11p
+email: sojkam1@fel.cvut.cz
+description: "Using Linux for IEEE 802.11p communincation"
+baseurl: ""
+url: "http://rtime.felk.cvut.cz"
+twitter_username: wentasah
+github_username:  CTU_IIG
+
+# Build settings
+markdown: kramdown
+permalink: pretty
