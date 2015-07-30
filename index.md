@@ -8,6 +8,9 @@ Installation
 
 ### Linux kernel
 
+Install some extra packages
+
+    sudo apt-get install gcc libncurses5-dev make
 
 Mainline Linux kernel 3.19 contains most of the changes needed
 for 802.11p support. The only missing part is the patch for ath9k
@@ -49,11 +52,11 @@ IEEE802.11p support is
 [available in `iw` 4.0 and later](https://git.kernel.org/cgit/linux/kernel/git/jberg/iw.git/commit/?id=3955e5247806b94261ed2fc6d34c54e6cdee6676).
 If your system has an older version follow this procedure.
 
-Install libnl development files
+Install libnl development files and extra package
 
-    sudo apt-get install libnl-dev
+    sudo apt-get install pkg-config libnl-genl-3-dev
 
-Clone the official iw repository
+Clone the official iw repository or clone it from [mainline git](http://git.kernel.org/cgit/linux/kernel/git/jberg/iw.git).
 
     git clone --branch its-g5_v3 https://github.com/CTU-IIG/802.11p-iw.git
     cd 802.11p-iw
