@@ -113,7 +113,7 @@ Compile and install CRDA (custom REG_BIN is needed on Debian)
 
 Test CRDA and the generated regulatory.bin
 
-    sudo /sbin/regdbdump ../802.11p-wireless-regdb/regulatory.bin | grep -i ocb
+    sudo /sbin/regdbdump /lib/crda/regulatory.bin | grep -i ocb
     country 00: invalid
      	(5850.000 - 5925.000 @ 20.000), (20.00), NO-CCK, OCB-ONLY
 
