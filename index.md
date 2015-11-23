@@ -106,10 +106,10 @@ Copy your public key (installed by wireless-regdb, see above) to CRDA sources
 
     cp /lib/crda/pubkeys/$USER.key.pub.pem pubkeys/
 
-Compile and install CRDA
+Compile and install CRDA (custom REG_BIN is needed on Debian)
 
-    make
-    sudo PREFIX=/ REG_BIN=/lib/crda/regulatory.bin make install
+    make REG_BIN=/lib/crda/regulatory.bin
+    sudo make install PREFIX=/ REG_BIN=/lib/crda/regulatory.bin
 
 Test CRDA and the generated regulatory.bin
 
