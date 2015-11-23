@@ -88,7 +88,7 @@ Clone the repository, compile it, install it
     git clone --branch its-g5_v1 https://github.com/CTU-IIG/802.11p-wireless-regdb.git
     cd 802.11p-wireless-regdb
     make
-    sudo PREFIX=/ make install
+    sudo make install PREFIX=/
 
 
 ### CRDA -- Central Regulatory Domain Agent
