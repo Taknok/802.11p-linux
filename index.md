@@ -3,6 +3,29 @@ layout: page
 title: HOWTO
 ---
 
+This page contains information about using Linux for Vehicle-to-X
+communication, also known as Intelligent Transportation Systems or
+IEEE 802.11p.
+
+* This will become a table of contents (this text will be scraped).
+{:toc}
+
+News
+------------
+
+2015-12-09
+: Bernd Lehmann will talk at
+[32nd Chaos Communication Congress (32C3)](https://events.ccc.de/congress/2015/wiki/Main_Page)
+about [Vehicle2Vehicle Communication based on IEEE 802.11p](http://halfnarp.events.ccc.de/).
+
+2015-11-23
+: Patches for supporting 5.9 GHz band [posted](http://article.gmane.org/gmane.linux.kernel.wireless.general/145567).
+
+2015-09-29
+: Patch adding OCB mode support to ath9k driver
+  [will appear in Linux 4.4](http://mid.gmane.org/20150929074312.5DB17140D97@smtp.codeaurora.org).
+
+
 Installation
 ------------
 

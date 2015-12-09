@@ -411,3 +411,20 @@ a:visited { color: #205caa; }
     margin: 0 0 15px; }
 
 }
+
+dl {
+}
+dt {
+    float: left;
+    clear: left;
+    width: 10ex;
+    text-align: right;
+    font-weight: bold;
+}
+dt:after {
+    content: ":";
+}
+dd {
+    margin: 0 0 0 12ex;
+    padding: 0 0 0.5em 0;
+}
