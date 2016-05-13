@@ -633,8 +633,7 @@ ath_regd_init_wiphy(struct ath_regulatory *reg,
 	const struct ieee80211_regdomain *regd;
 
 	wiphy->reg_notifier = reg_notifier;
-	wiphy->regulatory_flags |= REGULATORY_STRICT_REG |
-				   REGULATORY_CUSTOM_REG;
+	wiphy->regulatory_flags |= REGULATORY_CUSTOM_REG;
 
 	if (ath_is_world_regd(reg)) {
 		/*
